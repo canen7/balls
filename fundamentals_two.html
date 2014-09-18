@@ -1,0 +1,97 @@
+
+
+<html>
+<head>
+	<title>Basic II</title>
+	<script type="text/javascript">
+	var person = {};
+	person = {
+  		name: 'Alvaro',   
+		distance_travelled: 0, 
+		say_name: function()
+		{
+			alert(this.name);
+		},
+		say_something: function (what_to_say)
+		{
+			alert(this.name + " says " + what_to_say);
+		},
+		city: 'Mountain View',
+		state: 'CA',
+		zipcode: 94043,
+		walk: function()
+		{
+			alert(this.name + " is walking");
+			this.distance_travelled = this.distance_travelled + 3
+			console.log ("Total distance travelled is " + this.distance_travelled);	
+		},
+		run: function()
+		{
+			alert(this.name + " is running");
+			this.distance_travelled = this.distance_travelled + 10
+			console.log ("Total distance travelled is " + this.distance_travelled);		
+		},
+		crawl: function()
+		{
+			alert(this.name + " is crawling");
+			this.distance_travelled = this.distance_travelled + 1	
+			console.log ("Total distance travelled is " + this.distance_travelled);	
+		},
+		doSomething: function()
+		{
+			random_number = Math.random();
+			if (random_number > 0.66)
+			{
+				this.walk();
+			}
+			else if (random_number > 0.33)
+			{
+				this.run();
+			}
+			else
+			{
+				this.crawl();
+			}
+
+		},
+		fly: function(function_x,function_y)
+		{
+			random_number = Math.random();
+			if (random_number <=0.30)
+			{
+				alert('flying and ');
+				function_x();
+			}
+			else
+			{
+				alert('failed to fly and ');
+				function_y();
+			}
+		}
+	}
+	// person.say_name();
+	// person.say_something('hello');
+	// person.walk();
+	// person.run();
+	// person.crawl();
+
+	//a bunch of random activities
+	// person.doSomething();
+	// person.doSomething();
+	// person.doSomething();
+	// person.doSomething();
+	// person.doSomething();
+
+
+	person.fly(person.run,person.crawl);
+
+
+	console.log(person.distance_travelled);
+	</script>
+
+
+</head>
+<body>
+
+</body>
+</html>

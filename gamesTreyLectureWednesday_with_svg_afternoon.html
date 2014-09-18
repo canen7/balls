@@ -1,0 +1,152 @@
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		body
+		{
+			margin: 0;
+		}
+
+		svg
+		{
+			margin: 50px;
+			border: 2px solid black;
+		}
+	</style>
+</head>
+<body> 
+	<svg width='500' height='500' id='screen'>
+		<circle id='1' cx='250' cy='250' r='10' fill='blue'></circle>
+	</svg>
+	<script type="text/javascript">
+
+		function dist_form(x1,y1,x2,y2)
+		{
+			return Math.sqrt( Math.pow((x1-x2),2) + Math.pow((y1-y2),2) )
+		}
+
+		var circles = {};
+		//same deal, make pseudo class!
+		function Circle(x, y, r, id){
+			this.attrs = {cx: x, cy: y, r: r, fill: 'blue', id: id}
+			var x_velo = Math.floor(Math.random()*12) - 6;
+			var y_velo = Math.floor(Math.random()*12) - 6;
+
+
+			//50% chance the y is positive
+			if (Math.floor(Math.random()*2))
+			{
+				y_velo=-y_velo;
+			}
+			else
+			{
+				x_velo=-x_velo;
+			}
+			//console.log(x_velo,y_velo)
+			this.velocities = {x: x_velo,y:y_velo}
+
+			this.draw = function(){
+				var new_circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+				for(var i in this.attrs)
+				{
+					//this is the only way to set attributes of SVG elements after pageload
+					new_circle.setAttribute(i, this.attrs[i])
+				}
+
+				document.getElementById('screen').appendChild(new_circle);
+			}
+
+			this.draw();
+		} //end of circle class
+
+		var number_of_circles = 1;
+		var svg = document.getElementById('screen');
+
+		svg.onclick = function(event){
+			number_of_circles++;
+			var circle = new Circle(event.x -52 , event.y -52 , Math.floor(Math.random()*16), number_of_circles);
+			circles[number_of_circles] = circle;
+		}
+
+		function engine(){
+			var deletables = [];
+			for(var i in circles){
+				
+
+				if ( (circles[i].attrs.cx  < circles[i].attrs.r) || (circles[i].attrs.cx  > 500 - circles[i].attrs.r) )
+				{
+					circles[i].velocities.x *= -1;
+				}
+				
+
+				if( (circles[i].attrs.cy  < circles[i].attrs.r) || (circles[i].attrs.cy  > 500 - circles[i].attrs.r) )
+				{
+					circles[i].velocities.y *= -1;
+				}
+				
+
+				//updates the Javascript object
+				circles[i].attrs.cx += circles[i].velocities.x;
+				circles[i].attrs.cy += circles[i].velocities.y;
+				//uses the js object to locate the HTML circle
+				var circle = document.getElementById(circles[i].attrs.id);
+				//this uses the updated js object to update the HTML object
+				circle.setAttribute('cx', circles[i].attrs.cx);
+				circle.setAttribute('cy',circles[i].attrs.cy);
+
+				// BEGIN ALMiGHTY COLLISION DETECTION
+				for (var j in circles)
+				{
+					if(i!=j)
+					{
+						var distance = dist_form(circles[i].attrs.cx, circles[i].attrs.cy, circles[j].attrs.cx, circles[j].attrs.cy );
+						if(distance<circles[i].attrs.r + circles[j].attrs.r)
+						{
+							//write collision code
+							if (circles[i].attrs.r> circles[j].attrs.r)
+							{
+								circles[i].attrs.r += (circles[j].attrs.r/3);
+								
+								document.getElementById(i).setAttribute('r',circles[i].attrs.r);
+								if (deletables.indexOf(j)==-1)
+								{
+									deletables.push(j);
+								}
+								//first remove HTM element from the screen
+								//svg.removeChild(document.getElementById(j));
+								//then remove the JS object referenced in the Circles object
+								//delete circles[j];
+							}
+							else
+							{
+								circles[j].attrs.r += (circles[i].attrs.r/3);
+								
+								document.getElementById(j).setAttribute('r',circles[j].attrs.r);
+								if (deletables.indexOf(i)==-1)
+								{
+									deletables.push(i);
+								}
+								//first remove HTM element from the screen
+								//svg.removeChild(document.getElementById(i));
+								//then remove the JS object referenced in the Circles object
+								//delete circles[i];
+							}
+						}
+					}
+
+
+				}
+			}
+			if (deletables.length > 0)
+			{
+				for (var i in deletables) {
+					svg.removeChild(document.getElementById(circles[deletables[i]].attrs.id));
+					delete circles[deletables[i]];
+				}
+			}
+		}
+
+		setInterval(function(){engine()}, 50);
+	</script>
+</body>
+</html>

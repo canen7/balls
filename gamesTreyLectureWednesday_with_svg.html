@@ -1,0 +1,84 @@
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+	body{
+		margin: 0;
+	}
+	</style>
+</head>
+<body>
+	<svg width='500' height='500' id='screen'>
+		<circle id='1' cx='250' cy='250' r='10' fill='black'></circle>
+	</svg>
+	<script type="text/javascript">
+		var circles = {};
+		var number_of_circles = 1
+		
+		//same deal, make pseudo class
+		function Circle(x,y,r,id,direction){
+			this.direction = direction;
+			var color = ['red','blue','green','yellow','black','purple'];
+			var i = Math.floor(Math.random()*5);
+			this.attrs ={cx:x,cy:y,r:r,fill:color[i], id: id,direction:direction}
+			this.draw = function(){
+						var new_circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+						for (var i in this.attrs)
+							{
+
+								//the only way to set attributes after pageload
+								new_circle.setAttribute(i, this.attrs[i])
+							}
+						document.getElementById('screen').appendChild(new_circle);
+
+						}
+						this.draw()
+		}//end of circle class
+		
+		var svg = document.getElementById('screen');
+		svg.onclick = function(event){
+			number_of_circles ++;
+			var circle = new Circle(event.x, event.y, Math.random()*20, number_of_circles,'down');
+			circles[number_of_circles] = circle;
+			
+		}
+
+		function engine(){
+			for (var i in circles ){
+				
+				//updates the js object
+				
+				if (circles[i].attrs.direction == 'down'){
+				circles[i].attrs.cy += 1;
+				var circle = document.getElementById(circles[i].attrs.id);
+				circle.setAttribute('cy',circles[i].attrs.cy)
+				}
+				if(circles[i].attrs.direction == 'up') {
+				console.log('hello')
+				circles[i].attrs.cy -= 1;
+				var circle = document.getElementById(circles[i].attrs.id);
+				circle.setAttribute('cy',circles[i].attrs.cy)
+
+				}
+
+
+				if ( (circles[i].attrs.cy > 500) && (circles[i].attrs.direction =='down') )
+				{
+					//delete circles[i];
+					//document.getElementById('screen').removeChild(circle);
+					circle.setAttribute('direction','up');
+					circles[i].attrs.direction='up'
+				}
+				else if ( (circles[i].attrs.cy < 0) && (circles[i].attrs.direction =='up') )
+				{
+					circle.setAttribute('direction','down');
+					circles[i].attrs.direction='down'
+				}
+
+				
+			}
+		}
+		setInterval(function(){engine()},20);
+	</script>
+</body>
+</html>

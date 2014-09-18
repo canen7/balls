@@ -1,0 +1,71 @@
+<html>
+<head>
+	<title></title>
+	<style type="">
+	body{
+		margin:0	;
+	}
+	</style>
+	
+	<script type="text/javascript">
+	//make a pseudo circle class
+
+	var number_of_circles = 1;
+	var circles = {};
+
+	function Circle(r,x,y,id)
+	{
+		this.r=r;
+		this.x=x;
+		this.y=y;
+		this.id=id;
+
+		this.draw = function (color){
+			var canvas=document.getElementById('canvas');
+			//more or less tells the browser we are drawing on a two dimensional surface
+			var pen = canvas.getContext('2d');
+			// self explanatory, allows pen to start drawing
+			pen.beginPath();
+			pen.arc(this.x,this.y,this.r,0,2*Math.PI,true);
+
+			pen.strokeStyle=color;
+
+			pen.stroke();
+			//alert('we drew');
+		}
+		this.draw('black');
+	}
+
+
+	
+
+	</script>
+</head>
+<body>
+	<!-- don't style the canvas in the css, do it directly in the tags-->
+	<canvas id='canvas' width='500' height='500'></canvas>
+	<script type="text/javascript">
+	var canvas = document.getElementById('canvas');
+	canvas.onclick=function(event){
+		console.log(event);
+		var circle = new Circle (10,event.x,event.y,number_of_circles);
+		circles[number_of_circles] = circle;
+		console.log(circles);
+		number_of_circles ++;
+	}
+	//this is our 'game' engine
+	function engine()
+	{
+		var colors = ['red','green','blue']
+		for(var i in circles){
+			//redraw the circle with a different color
+			circles[i].draw(colors[Math.floor(Math.random()*3)])
+		}
+
+		// }
+	}
+
+	setInterval(function(){engine()},500);
+	</script>
+</body>
+</html>
